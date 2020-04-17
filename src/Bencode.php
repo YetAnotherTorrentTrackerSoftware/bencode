@@ -2,7 +2,7 @@
 /**
  * Rych Bencode
  *
- * Bencode serializer for PHP 5.3+.
+ * Bencode serializer for PHP 7.4.
  *
  * @package   Rych\Bencode
  * @copyright Copyright (c) 2014, Ryan Chouinard
@@ -21,14 +21,15 @@ namespace Rych\Bencode;
 class Bencode
 {
 
-    const TYPE_ARRAY = "array";
-    const TYPE_OBJECT = "object"; // NOT IMPLEMENTED
+    public const TYPE_ARRAY = 'array';
+    public const TYPE_OBJECT = 'object'; // NOT IMPLEMENTED
+    public const TYPES = [self::TYPE_ARRAY, self::TYPE_OBJECT];
 
     /**
      * Decode a bencode encoded string
      *
-     * @param  string  $string The string to decode.
-     * @param  string  $decodeType Flag used to indicate whether the decoded
+     * @param string $string The string to decode.
+     * @param string $decodeType Flag used to indicate whether the decoded
      *   value should be returned as an object or an array.
      * @return mixed   Returns the appropriate data type for the decoded data.
      */
@@ -40,10 +41,10 @@ class Bencode
     /**
      * Encode a value into a bencode encoded string
      *
-     * @param  mixed   $value The value to encode.
+     * @param mixed $value The value to encode.
      * @return string  Returns a bencode encoded string.
      */
-    public static function encode($value)
+    public static function encode($value): string
     {
         return Encoder::encode($value);
     }

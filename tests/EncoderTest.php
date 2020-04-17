@@ -13,6 +13,7 @@
 namespace Rych\Bencode;
 
 use PHPUnit_Framework_TestCase as TestCase;
+use stdClass;
 
 /**
  * Bencode encoder test
@@ -23,57 +24,52 @@ class EncoderTest extends TestCase
     /**
      * Test that strings are properly encoded
      *
-     * @test
      */
-    public function testCanEncodeString()
+    public function testCanEncodeString(): void
     {
-        $this->assertEquals("6:string", Encoder::encode("string"));
+        $this->assertEquals('6:string', Encoder::encode('string'));
     }
 
     /**
      * Test that integers are properly encoded
      *
-     * @test
      */
-    public function testCanEncodeInteger()
+    public function testCanEncodeInteger(): void
     {
-        $this->assertEquals("i42e", Encoder::encode(42));
-        $this->assertEquals("i-42e", Encoder::encode(-42));
-        $this->assertEquals("i0e", Encoder::encode(0));
+        $this->assertEquals('i42e', Encoder::encode(42));
+        $this->assertEquals('i-42e', Encoder::encode(-42));
+        $this->assertEquals('i0e', Encoder::encode(0));
     }
 
     /**
      * Test that lists are properly encoded
      *
-     * @test
      */
-    public function testCanEncodeList()
+    public function testCanEncodeList(): void
     {
-        $this->assertEquals("l3:foo3:bare", Encoder::encode(array("foo", "bar")));
+        $this->assertEquals('l3:foo3:bare', Encoder::encode(array('foo', 'bar')));
     }
 
     /**
      * Test that dictionaries are properly encoded
      *
-     * @test
      */
-    public function testCanEncodeDictionary()
+    public function testCanEncodeDictionary(): void
     {
-        $this->assertEquals("d3:foo3:bare", Encoder::encode(array("foo" => "bar")));
+        $this->assertEquals('d3:foo3:bare', Encoder::encode(array('foo' => 'bar')));
     }
 
     /**
      * Test that objects with public properties are properly encoded
      *
-     * @test
      */
-    public function testCanEncodeObjectWithoutToArray()
+    public function testCanEncodeObjectWithoutToArray(): void
     {
-        $object = new \stdClass;
-        $object->string = "foo";
+        $object = new stdClass;
+        $object->string = 'foo';
         $object->integer = 42;
 
-        $this->assertEquals("d7:integeri42e6:string3:fooe", Encoder::encode($object));
+        $this->assertEquals('d7:integeri42e6:string3:fooe', Encoder::encode($object));
     }
 
     /**
@@ -82,14 +78,14 @@ class EncoderTest extends TestCase
      * Encoder should treat numeric strings as strings rather than
      * integers.
      */
-    public function testIssue1Regression()
+    public function testIssue1Regression(): void
     {
         $data = array(
-            "Numeric string value" => "1",
-            "1" => "Numeric string key",
+            'Numeric string value' => '1',
+            '1'                    => 'Numeric string key',
         );
 
-        $this->assertEquals("d20:Numeric string value1:11:118:Numeric string keye", Encoder::encode($data));
+        $this->assertEquals('d20:Numeric string value1:11:118:Numeric string keye', Encoder::encode($data));
     }
 
 }

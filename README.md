@@ -6,8 +6,10 @@
 [![Quality Score][ico-code-quality]][link-code-quality]
 [![Total Downloads][ico-downloads]][link-downloads]
 
+This is an updated version of https://github.com/rchouinard/bencode
+
 This library allows developers to encode or decode bencoded data strings in
-PHP 5.3+. More information about bencode can be found at [Wikipedia](http://en.wikipedia.org/wiki/Bencode).
+PHP 7.4+. More information about bencode can be found at [Wikipedia](http://en.wikipedia.org/wiki/Bencode).
 The format is primarily used in the .torrent file specification.
 
 
@@ -30,12 +32,12 @@ $ composer require rych/bencode
 use Rych\Bencode\Bencode;
 
 $data = array(
-    "string" => "bar",
-    "integer" => 42,
-    "array" => array(
-        "one",
-        "two",
-        "three",
+    'string' => 'bar',
+    'integer' => 42,
+    'array' => array(
+        'one',
+        'two',
+        'three',
     ),
 );
 
@@ -51,7 +53,7 @@ The above produces the string `d5:arrayl3:one3:two5:threee7:integeri42e6:string3
 
 use Rych\Bencode\Bencode;
 
-$string = "d5:arrayl3:one3:two5:threee7:integeri42e6:string3:bare";
+$string = 'd5:arrayl3:one3:two5:threee7:integeri42e6:string3:bare';
 
 print_r(Bencode::decode($string));
 ```

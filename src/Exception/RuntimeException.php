@@ -2,7 +2,7 @@
 /**
  * Rych Bencode
  *
- * Bencode serializer for PHP 5.3+.
+ * Bencode serializer for PHP 7.4.
  *
  * @package   Rych\Bencode
  * @copyright Copyright (c) 2014, Ryan Chouinard

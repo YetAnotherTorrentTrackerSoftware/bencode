@@ -24,197 +24,179 @@ class DecoderTest extends TestCase
     /**
      * Test that strings are properly decoded
      *
-     * @test
      */
-    public function testCanDecodeString()
+    public function testCanDecodeString(): void
     {
-        $this->assertEquals("string", Decoder::decode('6:string'));
+        $this->assertEquals('string', Decoder::decode('6:string'));
     }
 
     /**
      * Test that an unterminated string triggers an exception
      *
-     * @test
      * @expectedException RuntimeException
      */
-    public function testUnterminatedStringThrowsException()
+    public function testUnterminatedStringThrowsException(): void
     {
-        Decoder::decode("6:stri");
+        Decoder::decode('6:stri');
     }
 
     /**
      * Test that a zero-padded string length triggers an exception
      *
-     * @test
      * @expectedException RuntimeException
      */
-    public function testZeroPaddedLengthInStringThrowsException()
+    public function testZeroPaddedLengthInStringThrowsException(): void
     {
-        Decoder::decode("03:foo");
+        Decoder::decode('03:foo');
     }
 
     /**
      * Test that a missing colon triggers an exception
      *
-     * @test
      * @expectedException RuntimeException
      */
-    public function testMissingColonInStringThrowsException()
+    public function testMissingColonInStringThrowsException(): void
     {
-        Decoder::decode("3foo");
+        Decoder::decode('3foo');
     }
 
     /**
      * Test that integers are properly decoded
      *
-     * @test
      */
-    public function testCanDecodeInteger()
+    public function testCanDecodeInteger(): void
     {
-        $this->assertEquals("42", Decoder::decode("i42e"));
-        $this->assertEquals("-42", Decoder::decode("i-42e"));
-        $this->assertEquals("0", Decoder::decode("i0e"));
+        $this->assertEquals('42', Decoder::decode('i42e'));
+        $this->assertEquals('-42', Decoder::decode('i-42e'));
+        $this->assertEquals('0', Decoder::decode('i0e'));
     }
 
     /**
      * Test that an empty integer triggers an exception
      *
-     * @test
      * @expectedException RuntimeException
      */
-    public function testEmptyIntegerThrowsException()
+    public function testEmptyIntegerThrowsException(): void
     {
-        Decoder::decode("ie");
+        Decoder::decode('ie');
     }
 
     /**
      * Test that a non-digit in an integer trigger an exception
      *
-     * @test
      * @expectedException RuntimeException
      */
-    public function testNonDigitCharInIntegerThrowsException()
+    public function testNonDigitCharInIntegerThrowsException(): void
     {
-        Decoder::decode("iae");
+        Decoder::decode('iae');
     }
 
     /**
      * Test that a zero-padded integer triggers an exception
      *
-     * @test
      * @expectedException RuntimeException
      */
-    public function testLeadingZeroInIntegerThrowsException()
+    public function testLeadingZeroInIntegerThrowsException(): void
     {
-        Decoder::decode("i042e");
+        Decoder::decode('i042e');
     }
 
     /**
      * Test that an unterminated integer triggers an exception
      *
-     * @test
      * @expectedException RuntimeException
      */
-    public function testUnterminatedIntegerThrowsException()
+    public function testUnterminatedIntegerThrowsException(): void
     {
-        Decoder::decode("i42");
+        Decoder::decode('i42');
     }
 
     /**
      * That that lists are properly decoded
      *
-     * @test
      */
-    public function testCanDecodeList()
+    public function testCanDecodeList(): void
     {
-        $this->assertEquals(array("foo", "bar"), Decoder::decode("l3:foo3:bare"));
+        $this->assertEquals(array('foo', 'bar'), Decoder::decode('l3:foo3:bare'));
     }
 
     /**
      * Test that an unterminated lists triggers an exception
      *
-     * @test
      * @expectedException RuntimeException
      */
-    public function testUnterminatedListThrowsException()
+    public function testUnterminatedListThrowsException(): void
     {
-        Decoder::decode("l3:foo3:bar");
+        Decoder::decode('l3:foo3:bar');
     }
 
     /**
      * Test that dictionaries are properly decoded
      *
-     * @test
      */
-    public function testDecodeDictionary()
+    public function testDecodeDictionary(): void
     {
-        $this->assertEquals(array("foo" => "bar"), Decoder::decode("d3:foo3:bare"));
+        $this->assertEquals(array('foo' => 'bar'), Decoder::decode('d3:foo3:bare'));
     }
 
     /**
      * Test that an unterminated dictionary triggers an exception
      *
-     * @test
      * @expectedException RuntimeException
      */
-    public function testUnterminatedDictThrowsException()
+    public function testUnterminatedDictThrowsException(): void
     {
-        Decoder::decode("d3:foo3:bar");
+        Decoder::decode('d3:foo3:bar');
     }
 
     /**
      * Test that a duplicate dictionary key triggers an exception
      *
-     * @test
      * @expectedException RuntimeException
      */
-    public function testDuplicateDictionaryKeyThrowsException()
+    public function testDuplicateDictionaryKeyThrowsException(): void
     {
-        Decoder::decode("d3:foo3:bar3:foo3:bare");
+        Decoder::decode('d3:foo3:bar3:foo3:bare');
     }
 
     /**
      * Test that a non-string dictionary key triggers an exception
      *
-     * @test
      * @expectedException RuntimeException
      */
-    public function testNonStringDictKeyThrowsException()
+    public function testNonStringDictKeyThrowsException(): void
     {
-        Decoder::decode("di42e3:bare");
+        Decoder::decode('di42e3:bare');
     }
 
     /**
      * Test that an unknown entity triggers an exception
      *
-     * @test
      * @expectedException RuntimeException
      */
-    public function testUnknownEntityThrowsException()
+    public function testUnknownEntityThrowsException(): void
     {
-        Decoder::decode("a3:fooe");
+        Decoder::decode('a3:fooe');
     }
 
     /**
      * Test that attempting to decode a non-string triggers an exception
      *
-     * @test
      * @expectedException RuntimeException
      */
-    public function testDecodeNonStringThrowsException()
+    public function testDecodeNonStringThrowsException(): void
     {
-        Decoder::decode(array());
+        Decoder::decode((string)array());
     }
 
     /**
      * Test that multiple entities must be in a list or dictionary
      *
-     * @test
      * @expectedException RuntimeException
      */
-    public function testDecodeMultipleTypesOutsideOfListOrDictShouldThrowException()
+    public function testDecodeMultipleTypesOutsideOfListOrDictShouldThrowException(): void
     {
-        Decoder::decode("3:foo3:bar");
+        Decoder::decode('3:foo3:bar');
     }
 
 }

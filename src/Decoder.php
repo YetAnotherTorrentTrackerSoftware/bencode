@@ -2,7 +2,7 @@
 /**
  * Rych Bencode
  *
- * Bencode serializer for PHP 5.3+.
+ * Bencode serializer for PHP 7.4.
  *
  * @package   Rych\Bencode
  * @copyright Copyright (c) 2014, Ryan Chouinard
@@ -27,7 +27,7 @@ class Decoder
      *
      * @var string
      */
-    private $source;
+    private string $source;
 
     /**
      * The length of the encoded source string
@@ -48,7 +48,7 @@ class Decoder
      *
      * @var integer
      */
-    private $offset = 0;
+    private int $offset = 0;
 
     /**
      * Decoder constructor
@@ -62,9 +62,11 @@ class Decoder
     {
         $this->source = $source;
         $this->sourceLength = strlen($this->source);
-        $this->decodeType = in_array($decodeType, array(Bencode::TYPE_ARRAY, Bencode::TYPE_OBJECT))
-            ? $decodeType
-            : Bencode::TYPE_ARRAY;
+        $this->decodeType = $decodeType;
+
+        if (!in_array($decodeType, Bencode::TYPES, true)) {
+            throw new \RuntimeException('Unknown Type');
+        }
     }
 
     /**
@@ -79,14 +81,14 @@ class Decoder
     public static function decode($source, $decodeType = Bencode::TYPE_ARRAY)
     {
         if (!is_string($source)) {
-            throw new RuntimeException("Argument expected to be a string; Got " . gettype($source));
+            throw new RuntimeException('Argument expected to be a string; Got ' . gettype($source));
         }
 
         $decoder = new self($source, $decodeType);
         $decoded = $decoder->doDecode();
 
-        if ($decoder->offset != $decoder->sourceLength) {
-            throw new RuntimeException("Found multiple entities outside list or dict definitions");
+        if ($decoder->offset !== $decoder->sourceLength) {
+            throw new RuntimeException('Found multiple entities outside list or dict definitions');
         }
 
         return $decoded;
@@ -102,15 +104,15 @@ class Decoder
     {
         switch ($this->getChar()) {
 
-            case "i":
+            case 'i':
                 ++$this->offset;
                 return $this->decodeInteger();
 
-            case "l":
+            case 'l':
                 ++$this->offset;
                 return $this->decodeList();
 
-            case "d":
+            case 'd':
                 ++$this->offset;
                 return $this->decodeDict();
 
@@ -130,15 +132,15 @@ class Decoder
      * @return integer Returns the decoded integer.
      * @throws RuntimeException
      */
-    private function decodeInteger()
+    private function decodeInteger(): int
     {
-        $offsetOfE = strpos($this->source, "e", $this->offset);
+        $offsetOfE = strpos($this->source, 'e', $this->offset);
         if (false === $offsetOfE) {
             throw new RuntimeException("Unterminated integer entity at offset $this->offset");
         }
 
         $currentOffset = $this->offset;
-        if ("-" == $this->getChar($currentOffset)) {
+        if ('-' === $this->getChar($currentOffset)) {
             ++$currentOffset;
         }
 
@@ -158,7 +160,7 @@ class Decoder
         // One last check to make sure zero-padded integers don't slip by, as
         // they're not allowed per bencode specification.
         $absoluteValue = (string) abs($value);
-        if (1 < strlen($absoluteValue) && "0" == $value[0]) {
+        if (1 < strlen($absoluteValue) && strpos($value, '0') === 0) {
             throw new RuntimeException("Illegal zero-padding found in integer entity at offset $this->offset");
         }
 
@@ -175,13 +177,13 @@ class Decoder
      * @return string  Returns the decoded string.
      * @throws RuntimeException
      */
-    private function decodeString()
+    private function decodeString(): string
     {
-        if ("0" === $this->getChar() && ":" != $this->getChar($this->offset + 1)) {
+        if ('0' === $this->getChar() && ':' !== $this->getChar($this->offset + 1)) {
             throw new RuntimeException("Illegal zero-padding in string entity length declaration at offset $this->offset");
         }
 
-        $offsetOfColon = strpos($this->source, ":", $this->offset);
+        $offsetOfColon = strpos($this->source, ':', $this->offset);
         if (false === $offsetOfColon) {
             throw new RuntimeException("Unterminated string entity at offset $this->offset");
         }
@@ -203,14 +205,14 @@ class Decoder
      * @return array   Returns the decoded array.
      * @throws RuntimeException
      */
-    private function decodeList()
+    private function decodeList(): array
     {
         $list = array();
         $terminated = false;
         $listOffset = $this->offset;
 
         while (false !== $this->getChar()) {
-            if ("e" == $this->getChar()) {
+            if ('e' === $this->getChar()) {
                 $terminated = true;
                 break;
             }
@@ -233,14 +235,14 @@ class Decoder
      * @return array   Returns the decoded array.
      * @throws RuntimeException
      */
-    private function decodeDict()
+    private function decodeDict(): array
     {
         $dict = array();
         $terminated = false;
         $dictOffset = $this->offset;
 
         while (false !== $this->getChar()) {
-            if ("e" == $this->getChar()) {
+            if ('e' === $this->getChar()) {
                 $terminated = true;
                 break;
             }
